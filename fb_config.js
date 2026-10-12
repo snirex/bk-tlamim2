@@ -11,13 +11,13 @@
         if (!window.IS_DEMO) {
             //The data you received from the console
             const firebaseConfig = {
-                apiKey: "AIzaSyCTthCVxz18zIXT9Fpnzq_SgusBpINM-z8",
-                authDomain: "betkneset-001.firebaseapp.com",
-                projectId: "betkneset-001",
-                storageBucket: "betkneset-001.firebasestorage.app",
-                messagingSenderId: "300451630668",
-                appId: "1:300451630668:web:baca3d9e40c06b79b86ee9",
-                measurementId: "G-2XHKHB4PPR"
+                apiKey: "AIzaSyCKCHyKJTkXYtCS2p3J027jJfnI04npk7I",
+                authDomain: "en-shemer-booking.firebaseapp.com",
+                databaseURL: "https://en-shemer-booking-default-rtdb.firebaseio.com",
+                projectId: "en-shemer-booking",
+                storageBucket: "en-shemer-booking.firebasestorage.app",
+                messagingSenderId: "1023003700732",
+                appId: "1:1023003700732:web:6f67a1c6388517930c1679"
             };
 
             //init application
