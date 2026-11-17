@@ -29,6 +29,9 @@
     <link rel="dns-prefetch" href="https://accounts.google.com">
     <link rel="dns-prefetch" href="https://www.googleapis.com">
 
+    <!-- Load per-synagogue deployment settings before application scripts. -->
+    <script src="./app-config.js"></script>
+
     <title id="pageTitle">ניהול בית הכנסת</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
@@ -3223,38 +3226,38 @@
                             </div>
                         </div>
 
-                        <!-- שינוי סיסמת מנהל -->
-<div class="content-card" x-show="!window.IS_DEMO">
-    <div class="section-header" @click="ui.adminPwdOpen = !ui.adminPwdOpen">
-        <h6 class="mb-0 fw-bold">🔑 שינוי סיסמת כניסה למנהל</h6>
-        <i class="fas c-sec" :class="ui.adminPwdOpen ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
-    </div>
-    <div class="section-body" :class="{ collapsed: !ui.adminPwdOpen }">
-        <p class="small text-muted mt-2">
-            כדי לשנות את סיסמת הכניסה, הזן את הסיסמה הנוכחית ואת הסיסמה החדשה פעמיים.
-            הסיסמה החדשה חייבת להכיל לפחות 6 תווים.
-        </p>
-        <div class="row g-2 mt-1">
-            <div class="col-md-4">
-                <label class="small fw-bold mb-1">סיסמה נוכחית</label>
-                <input type="password" class="form-control" dir="ltr" autocomplete="current-password" x-model="adminPwd.current">
-            </div>
-            <div class="col-md-4">
-                <label class="small fw-bold mb-1">סיסמה חדשה</label>
-                <input type="password" class="form-control" dir="ltr" autocomplete="new-password" x-model="adminPwd.next">
-            </div>
-            <div class="col-md-4">
-                <label class="small fw-bold mb-1">אימות סיסמה חדשה</label>
-                <input type="password" class="form-control" dir="ltr" autocomplete="new-password" x-model="adminPwd.confirm" @keydown.enter="changeAdminPassword()">
-            </div>
-        </div>
-        <div class="mt-3">
-            <button class="btn btn-primary" :disabled="adminPwdSaving" @click="changeAdminPassword()">
-                <i class="fas fa-key"></i> עדכן סיסמה
-            </button>
-        </div>
-    </div>
-</div>
+                                                <!-- שינוי סיסמת מנהל -->
+                        <div class="content-card" x-show="!window.IS_DEMO">
+                            <div class="section-header" @click="ui.adminPwdOpen = !ui.adminPwdOpen">
+                                <h6 class="mb-0 fw-bold">🔑 שינוי סיסמת כניסה למנהל</h6>
+                                <i class="fas c-sec" :class="ui.adminPwdOpen ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                            </div>
+                            <div class="section-body" :class="{ collapsed: !ui.adminPwdOpen }">
+                                <p class="small text-muted mt-2">
+                                    כדי לשנות את סיסמת הכניסה, הזן את הסיסמה הנוכחית ואת הסיסמה החדשה פעמיים.
+                                    הסיסמה החדשה חייבת להכיל לפחות 6 תווים.
+                                </p>
+                                <div class="row g-2 mt-1">
+                                    <div class="col-md-4">
+                                        <label class="small fw-bold mb-1">סיסמה נוכחית</label>
+                                        <input type="password" class="form-control" dir="ltr" autocomplete="current-password" x-model="adminPwd.current">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="small fw-bold mb-1">סיסמה חדשה</label>
+                                        <input type="password" class="form-control" dir="ltr" autocomplete="new-password" x-model="adminPwd.next">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="small fw-bold mb-1">אימות סיסמה חדשה</label>
+                                        <input type="password" class="form-control" dir="ltr" autocomplete="new-password" x-model="adminPwd.confirm" @keydown.enter="changeAdminPassword()">
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <button class="btn btn-primary" :disabled="adminPwdSaving" @click="changeAdminPassword()">
+                                        <i class="fas fa-key"></i> עדכן סיסמה
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
 
 <!-- חיבור לגוגל דרייב -->
                         <div class="content-card" x-show="!window.IS_DEMO">
@@ -3749,7 +3752,7 @@
                                 <div class="form-check mb-2">
                                     <input class="form-check-input" type="checkbox" id="googleDriveOverwriteExisting"
                                         x-model="googleDriveOverwriteExisting"
-                                        @change="try { localStorage.setItem('synagogue_drive_overwrite', googleDriveOverwriteExisting ? '1' : '0') } catch (e) { }">
+                                        @change="try { localStorage.setItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.driveOverwrite), googleDriveOverwriteExisting ? '1' : '0') } catch (e) { }">
                                     <label class="form-check-label small" for="googleDriveOverwriteExisting">
                                         דרוס קובץ גיבוי קיים (במקום ליצור קובץ חדש) - שם הקובץ:
                                         betkneset_backup_latest.json
@@ -3972,7 +3975,7 @@
                 <div class="page-header">
                     <h1 class="page-title mb-0"><i class="fas fa-database"></i> יומן פעולות Database</h1>
                     <div>
-                        <button @click="dbLog = []; localStorage.removeItem('synagogue_dblog')"
+                        <button @click="dbLog = []; localStorage.removeItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.databaseLog))"
                             class="btn btn-sm btn-outline-danger">
                             <i class="fas fa-trash me-1"></i>נקה יומן</button>
                         <p class="my-3">
@@ -4699,11 +4702,11 @@
         // הפעלה: הוספת ?demo=1 (או כל פרמטר 'demo') לכתובת האתר.
         // במצב DEMO: אין חיבור ל-Firebase, כל הנתונים ב-localStorage בלבד,
         // ומתאפסים אוטומטית לנתוני seed אחרי שבוע.
-        window.IS_DEMO = new URLSearchParams(location.search).has('demo');
+        window.IS_DEMO = !!window.APP_CONFIG.features.demoMode && new URLSearchParams(location.search).has(window.APP_CONFIG.demo.queryParameter);
 
-        const DEMO_EXPIRY_MS = 7 * 24 * 60 * 60 * 1000; // שבוע
-        const DEMO_KEY = 'synagogue_demo_data';
-        const DEMO_EXPIRY_KEY = 'synagogue_demo_expiry';
+        const DEMO_EXPIRY_MS = window.APP_CONFIG.demo.expiryMs; // Read the demo-data lifetime from deployment configuration.
+        const DEMO_KEY = window.getSiteStorageKey(window.APP_CONFIG.storageKeys.demoData); // Build a site-specific demo-data key.
+        const DEMO_EXPIRY_KEY = window.getSiteStorageKey(window.APP_CONFIG.storageKeys.demoExpiry); // Build a site-specific demo-expiry key.
 
         function getDemoSeed() {
             return {
@@ -4755,8 +4758,8 @@
         function synagogueApp() {
             return {
                 // Authentication
-                isLoggedIn: !!localStorage.getItem('authUser'),
-                adminEmail: localStorage.getItem('authUser') || '',
+                isLoggedIn: !!localStorage.getItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.authUser)),
+                adminEmail: localStorage.getItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.authUser)) || '',
                 loginForm: { user: '', pass: '' },
                 readOnlyMode: false,
                 appReady: false,
@@ -4822,7 +4825,7 @@
                 lastUsedDate: '', //Used to retrieve the latest date in use, to prevent the user from messing with it
                 filteredHomeTransactions: [],
                 highlightedRowId: null,
-                dbLog: JSON.parse(localStorage.getItem('synagogue_dblog')) || [],
+                dbLog: JSON.parse(localStorage.getItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.databaseLog))) || [],
 
                 // Changelog is loaded from changelog.json (only when the changelog view opens).
                 changelog: [],
@@ -4872,11 +4875,11 @@
                     exactMatch: true
                 },
                 reportMemberSearch: '',
-                favoriteReports: JSON.parse(localStorage.getItem('synagogue_favorite_reports')) || [],
+                favoriteReports: JSON.parse(localStorage.getItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.favoriteReports))) || [],
                 availablePurposes: [],
 
                 // UI State
-                darkMode: localStorage.getItem('synagogue_dark_mode') === 'true',
+                darkMode: localStorage.getItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.darkMode)) === 'true',
                 ui: {
                     synagogueOpen: false,
                     backupOpen: false,
@@ -4968,8 +4971,7 @@
 
                 // Google Drive backup integration
                 // הדבק כאן פעם אחת את ה-Client ID המרכזי שלך (xxxx.apps.googleusercontent.com) - כל בתי הכנסת ישתמשו בו בלחיצה אחת
-                defaultGoogleClientId: '300451630668-ve7ohupjgtrjklc2gdr9ulbcaljsfsfm.apps.googleusercontent.com',
-                //old: '300451630668-h9evrtgafhq3q5a6ubjor6oehuh0l8au.apps.googleusercontent.com',
+                defaultGoogleClientId: window.APP_CONFIG.googleDrive.clientId,
                 //---google drive compatability settings
                 //Advanced Drive settings (custom Client ID / ID in use) are displayed only to the developer: add ?dev=1 to the URL. 
                 // If the site lacks a built-in Client ID, always display them; otherwise, connection is impossible.
@@ -4986,14 +4988,14 @@
                 googleDriveConnected: false,
                 googleDriveConnecting: false,
                 // תזכורת חיבור דרייב בדף הבית: זמן (ms) עד אליו התיבה מוסתרת (נשמר במכשיר זה בלבד)
-                driveBannerHiddenUntil: (() => { try { return Number(localStorage.getItem('synagogue_drive_banner_hidden_until')) || 0; } catch (e) { return 0; } })(),
+                driveBannerHiddenUntil: (() => { try { return Number(localStorage.getItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.driveBannerHiddenUntil))) || 0; } catch (e) { return 0; } })(),
                 googleDriveAccessToken: '',
                 googleDriveFiles: [],
                 googleDriveLoadingFiles: false,
                 googleDriveBackingUp: false,
                 googleDriveDownloadingId: '',
                 // דריסת קובץ הגיבוי הקיים בדרייב (ברירת מחדל: מסומן; הבחירה נשמרת במכשיר זה)
-                googleDriveOverwriteExisting: (() => { try { return localStorage.getItem('synagogue_drive_overwrite') !== '0'; } catch (e) { return true; } })(),
+                googleDriveOverwriteExisting: (() => { try { return localStorage.getItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.driveOverwrite)) !== '0'; } catch (e) { return true; } })(),
                 googleDriveUserEmail: '',
 
                 _gisLoaded: false,
@@ -5006,7 +5008,7 @@
                 _driveNotLinked: false,   // השרת אישר שאין הרשאה קבועה -> הלחיצה הבאה פותחת חלון גוגל מיד (בלי await לפניו)
 
                 // Print sessions
-                printSessions: JSON.parse(localStorage.getItem('synagogue_print_sessions')) || [],
+                printSessions: JSON.parse(localStorage.getItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.printSessions))) || [],
 
                 // Configuration
                 // הערה: אין לטעון קונפיגורציה מ-localStorage. המקור היחיד לאמת הוא Firestore
@@ -5098,10 +5100,10 @@
                     // ניקוי חד-פעמי: מחיקת נתוני מתפללים/תנועות/קונפיגורציה שנשמרו בגרסאות קודמות
                     // של האפליקציה ב-localStorage. במצב אמיתי (לא הדגמה) אסור שיישאר שום נתון כזה בדפדפן.
                     if (!window.IS_DEMO) {
-                        ['synagogue_members', 'synagogue_transactions', 'synagogue_config', 'synagogue_funds'].forEach(k => localStorage.removeItem(k));
+                        [window.APP_CONFIG.storageKeys.members, window.APP_CONFIG.storageKeys.transactions, window.APP_CONFIG.storageKeys.config, window.APP_CONFIG.storageKeys.funds].forEach(k => localStorage.removeItem(window.getSiteStorageKey(k)));
                     }
 
-                    this.isLoggedIn = !!localStorage.getItem('authUser');
+                    this.isLoggedIn = !!localStorage.getItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.authUser));
                     this.appReady = true;
                     this.loadLatestVersion();
 
@@ -5125,7 +5127,7 @@
                     } else if (!window.IS_DEMO) {
                         // טעינה אוטומטית של המספר שבו המתפלל התחבר בפעם הקודמת (נשמר רק במכשיר שלו)
                         try {
-                            const savedPhone = localStorage.getItem('lastWorshipperPhone');
+                            const savedPhone = localStorage.getItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.lastWorshipperPhone));
                             if (savedPhone && !this.worshipperPhone)
                                 this.worshipperPhone = savedPhone;
                         } catch (e) { }
@@ -5243,7 +5245,7 @@
                                         Swal.fire({ icon: 'error', title: 'שגיאה בחיבור לבסיס הנתונים', text: 'לא ניתן היה לטעון את הנתונים. שמירת שינויים חסומה עד לטעינה מוצלחת כדי לא לדרוס נתונים. לחץ על כפתור הרענון לניסיון נוסף.' });
                                     }
                                     this.isLoggedIn = true;
-                                    this.adminEmail = user.email || localStorage.getItem('authUser') || '';
+                                    this.adminEmail = user.email || localStorage.getItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.authUser)) || '';
                                     this.adminLinkedPhone = user.phoneNumber || '';
                                     this.extractAvailablePurposes();
                                     this.handleRouting(); // <--- 2. רק עכשיו מפעילים את הראוטינג (כשיש מתפללים בזיכרון לחפש לפיהם!)
@@ -5271,7 +5273,7 @@
 
                     // replace starting 0 with 972
                     if (cleanPhone.startsWith('0')) {
-                        cleanPhone = '972' + cleanPhone.substring(1);
+                        cleanPhone = window.APP_CONFIG.phoneAuth.countryCallingCode + cleanPhone.substring(1);
                     }
 
                     return `https://wa.me/${cleanPhone}`;
@@ -5506,7 +5508,7 @@
                         // Only if we got here - the log in was successful!
                         this.isLoggedIn = true;
                         this.adminEmail = this.loginForm.user;
-                        localStorage.setItem('authUser', this.loginForm.user);
+                        localStorage.setItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.authUser), this.loginForm.user);
                         //reset password field
                         this.loginForm.pass = '';
                         Swal.fire({ icon: 'success', title: 'ברוך הבא ' + this.loginForm.user, timer: 1500, showConfirmButton: false });
@@ -5537,7 +5539,7 @@
                         await window.auth.signOut();
                     this.isLoggedIn = false;
                     window.location.hash = '';
-                    localStorage.removeItem('authUser');
+                    localStorage.removeItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.authUser));
 
                 },
 
@@ -5551,8 +5553,8 @@
                 // נרמול מספר טלפון לפורמט בינלאומי E.164 (0501234567 -> +972501234567)
                 formatPhoneE164(rawPhone) {
                     let cleaned = String(rawPhone || '').replace(/\D/g, '');
-                    if (cleaned.startsWith('0')) cleaned = '972' + cleaned.substring(1);
-                    if (!cleaned.startsWith('972')) cleaned = '972' + cleaned;
+                    if (cleaned.startsWith(window.APP_CONFIG.phoneAuth.nationalPrefix)) cleaned = window.APP_CONFIG.phoneAuth.countryCallingCode + cleaned.substring(1);
+                    if (!cleaned.startsWith(window.APP_CONFIG.phoneAuth.countryCallingCode)) cleaned = window.APP_CONFIG.phoneAuth.countryCallingCode + cleaned;
                     return '+' + cleaned;
                 },
 
@@ -5563,7 +5565,7 @@
                         if (!window.db || !window.fsMethods) return;
 
                         // שמירת רשומה חדשה באוסף error_logs
-                        const errorRef = window.fsMethods.collection(window.db, 'error_logs');
+                        const errorRef = window.fsMethods.collection(window.db, window.APP_CONFIG.firestore.collections.errorLogs);
                         window.fsMethods.addDoc(errorRef, {
                             action: actionType,                              // סוג הפעולה (לדוגמה: PHONE_AUTH_SEND_SMS)
                             errorCode: errorObj.code || 'UNKNOWN_CODE',     // קוד השגיאה הרשמי של Firebase
@@ -5717,14 +5719,14 @@
                     }
 
                     // כניסת מתפלל הצליחה - זוכרים את המספר במכשיר הזה לכניסה הבאה
-                    try { localStorage.setItem('lastWorshipperPhone', this.worshipperPhone); } catch (e) { }
+                    try { localStorage.setItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.lastWorshipperPhone), this.worshipperPhone); } catch (e) { }
 
                     // שלב ב': המשתמש כבר מחובר בהצלחה ל-Firebase Auth בשלב הזה.
                     // כל שגיאה מכאן ואילך היא לא "קוד שגוי" - היא בעיה בקריאה לשרת
                     // (פונקציה לא פרוסה, config/singleton חסר וכו') ומוצגת בנפרד כדי
                     // שאפשר יהיה לאבחן אותה.
                     try {
-                        const listMyMembers = window.fsMethods.httpsCallable(window.functions, 'listMyMembers');
+                        const listMyMembers = window.fsMethods.httpsCallable(window.functions, window.APP_CONFIG.functions.callables.listMyMembers);
                         const result = await listMyMembers();
                         Swal.close();
                         const members = (result.data && result.data.members) || [];
@@ -5755,7 +5757,7 @@
                     this.worshipperLoading = true;
                     this.worshipperMode = true;
                     try {
-                        const getMemberData = window.fsMethods.httpsCallable(window.functions, 'getMemberData');
+                        const getMemberData = window.fsMethods.httpsCallable(window.functions, window.APP_CONFIG.functions.callables.getMemberData);
                         const result = await getMemberData({ memberUniqueId: member.memberUniqueId });
                         this.worshipperMember = result.data.member;
                         this.worshipperTransactions = result.data.transactions || [];
@@ -5827,7 +5829,7 @@
                     this.matchedWorshippers = [];
                     this.stopWebOtp();
                     this._lastAutoOtp = '';
-                    try { this.worshipperPhone = localStorage.getItem('lastWorshipperPhone') || ''; }
+                    try { this.worshipperPhone = localStorage.getItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.lastWorshipperPhone)) || ''; }
                     catch (e) {
                         this.worshipperPhone = '';
                     }
@@ -5911,54 +5913,54 @@
                 },
 
                 async changeAdminPassword() {
-    const { current, next, confirm } = this.adminPwd;
-    const user = window.auth && window.auth.currentUser;
-    if (!user || !user.email) {
-        Swal.fire('שגיאה', 'יש להיות מחוברים כמנהל כדי לשנות סיסמה', 'error');
-        return;
-    }
-    if (!current || !next || !confirm) {
-        Swal.fire('שגיאה', 'נא למלא את כל השדות', 'error');
-        return;
-    }
-    if (next.length < 6) {
-        Swal.fire('שגיאה', 'הסיסמה החדשה חייבת להכיל לפחות 6 תווים', 'error');
-        return;
-    }
-    if (next !== confirm) {
-        Swal.fire('שגיאה', 'הסיסמאות החדשות אינן זהות', 'error');
-        return;
-    }
-    if (next === current) {
-        Swal.fire('שגיאה', 'הסיסמה החדשה חייבת להיות שונה מהנוכחית', 'error');
-        return;
-    }
-    this.adminPwdSaving = true;
-    try {
-        Swal.fire({ title: 'מעדכן סיסמה...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-        // אימות מחדש עם הסיסמה הנוכחית (דרישה של Firebase לפני שינוי סיסמה)
-        const cred = window.fsMethods.EmailAuthProvider.credential(user.email, current);
-        await window.fsMethods.reauthenticateWithCredential(user, cred);
-        await window.fsMethods.updatePassword(user, next);
-        this.adminPwd = { current: '', next: '', confirm: '' };
-        Swal.close();
-        Swal.fire({ icon: 'success', title: 'הסיסמה עודכנה בהצלחה', timer: 1800, showConfirmButton: false });
-    } catch (err) {
-        console.error('changeAdminPassword error:', err.code, err.message);
-        Swal.close();
-        const msgs = {
-            'auth/invalid-credential': 'הסיסמה הנוכחית שגויה',
-            'auth/wrong-password': 'הסיסמה הנוכחית שגויה',
-            'auth/weak-password': 'הסיסמה החדשה חלשה מדי',
-            'auth/requires-recent-login': 'נדרשת כניסה מחדש. התנתק והתחבר ונסה שוב',
-            'auth/too-many-requests': 'יותר מדי ניסיונות. נסה שוב מאוחר יותר',
-            'auth/network-request-failed': 'בעיית תקשורת. בדוק את החיבור לאינטרנט'
-        };
-        Swal.fire('שגיאה', msgs[err.code] || err.message || 'נסה שוב', 'error');
-    } finally {
-        this.adminPwdSaving = false;
-    }
-},
+                const { current, next, confirm } = this.adminPwd;
+                const user = window.auth && window.auth.currentUser;
+                if (!user || !user.email) {
+                    Swal.fire('שגיאה', 'יש להיות מחוברים כמנהל כדי לשנות סיסמה', 'error');
+                    return;
+                }
+                if (!current || !next || !confirm) {
+                    Swal.fire('שגיאה', 'נא למלא את כל השדות', 'error');
+                    return;
+                }
+                if (next.length < 6) {
+                    Swal.fire('שגיאה', 'הסיסמה החדשה חייבת להכיל לפחות 6 תווים', 'error');
+                    return;
+                }
+                if (next !== confirm) {
+                    Swal.fire('שגיאה', 'הסיסמאות החדשות אינן זהות', 'error');
+                    return;
+                }
+                if (next === current) {
+                    Swal.fire('שגיאה', 'הסיסמה החדשה חייבת להיות שונה מהנוכחית', 'error');
+                    return;
+                }
+                this.adminPwdSaving = true;
+                try {
+                    Swal.fire({ title: 'מעדכן סיסמה...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                    // אימות מחדש עם הסיסמה הנוכחית (דרישה של Firebase לפני שינוי סיסמה)
+                    const cred = window.fsMethods.EmailAuthProvider.credential(user.email, current);
+                    await window.fsMethods.reauthenticateWithCredential(user, cred);
+                    await window.fsMethods.updatePassword(user, next);
+                    this.adminPwd = { current: '', next: '', confirm: '' };
+                    Swal.close();
+                    Swal.fire({ icon: 'success', title: 'הסיסמה עודכנה בהצלחה', timer: 1800, showConfirmButton: false });
+                } catch (err) {
+                    console.error('changeAdminPassword error:', err.code, err.message);
+                    Swal.close();
+                    const msgs = {
+                        'auth/invalid-credential': 'הסיסמה הנוכחית שגויה',
+                        'auth/wrong-password': 'הסיסמה הנוכחית שגויה',
+                        'auth/weak-password': 'הסיסמה החדשה חלשה מדי',
+                        'auth/requires-recent-login': 'נדרשת כניסה מחדש. התנתק והתחבר ונסה שוב',
+                        'auth/too-many-requests': 'יותר מדי ניסיונות. נסה שוב מאוחר יותר',
+                        'auth/network-request-failed': 'בעיית תקשורת. בדוק את החיבור לאינטרנט'
+                    };
+                    Swal.fire('שגיאה', msgs[err.code] || err.message || 'נסה שוב', 'error');
+                } finally {
+                    this.adminPwdSaving = false;
+                }
+            },
 
 async unlinkAdminPhone() {
                     const confirm = await Swal.fire({
@@ -6019,7 +6021,7 @@ async unlinkAdminPhone() {
 
                 toggleDarkMode() {
                     this.darkMode = !this.darkMode;
-                    localStorage.setItem('synagogue_dark_mode', this.darkMode);
+                    localStorage.setItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.darkMode), this.darkMode);
                 },
 
                 async resetAllData() {
@@ -6037,11 +6039,11 @@ async unlinkAdminPhone() {
                     });
 
                     if (result.isConfirmed && result.value) {
-                        localStorage.removeItem('synagogue_members');
-                        localStorage.removeItem('synagogue_transactions');
-                        localStorage.removeItem('synagogue_config');
-                        localStorage.removeItem('synagogue_funds');
-                        localStorage.removeItem('synagogue_favorite_reports');
+                        localStorage.removeItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.members));
+                        localStorage.removeItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.transactions));
+                        localStorage.removeItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.config));
+                        localStorage.removeItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.funds));
+                        localStorage.removeItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.favoriteReports));
                         // ===== DEMO MODE: איפוס נתוני הדמו לנתוני seed =====
                         if (window.IS_DEMO) {
                             localStorage.removeItem(DEMO_KEY);
@@ -6052,10 +6054,10 @@ async unlinkAdminPhone() {
                         if (window.db && window.fsMethods && window.auth && window.auth.currentUser) {
                             const uid = window.auth.currentUser.uid;
                             await Promise.all([
-                                window.fsMethods.setDoc(window.fsMethods.doc(window.db, 'users', uid, 'data', 'members'), { list: [] }),
-                                window.fsMethods.setDoc(window.fsMethods.doc(window.db, 'users', uid, 'data', 'transactions'), { list: [] }),
-                                window.fsMethods.setDoc(window.fsMethods.doc(window.db, 'users', uid, 'data', 'funds'), { list: [] }),
-                                window.fsMethods.setDoc(window.fsMethods.doc(window.db, 'users', uid, 'data', 'paymentPurposes'), { list: [] }),
+                                window.fsMethods.setDoc(window.fsMethods.doc(window.db, window.APP_CONFIG.firestore.usersCollection, uid, window.APP_CONFIG.firestore.dataSubcollection, window.APP_CONFIG.firestore.collections.members), { list: [] }),
+                                window.fsMethods.setDoc(window.fsMethods.doc(window.db, window.APP_CONFIG.firestore.usersCollection, uid, window.APP_CONFIG.firestore.dataSubcollection, window.APP_CONFIG.firestore.collections.transactions), { list: [] }),
+                                window.fsMethods.setDoc(window.fsMethods.doc(window.db, window.APP_CONFIG.firestore.usersCollection, uid, window.APP_CONFIG.firestore.dataSubcollection, window.APP_CONFIG.firestore.collections.funds), { list: [] }),
+                                window.fsMethods.setDoc(window.fsMethods.doc(window.db, window.APP_CONFIG.firestore.usersCollection, uid, window.APP_CONFIG.firestore.dataSubcollection, window.APP_CONFIG.firestore.collections.paymentPurposes), { list: [] }),
                             ]);
                             this.funds = [];
                             this.paymentPurposes = [];
@@ -6488,13 +6490,13 @@ async unlinkAdminPhone() {
 
                 // Data persistence — Firestore only (localStorage is never used for synagogue/congregant data)
                 saveConfigData() {
-                    return this._saveToFirestore('config', this.config);
+                    return this._saveToFirestore(window.APP_CONFIG.firestore.collections.config, this.config);
                 },
                 saveMembersData() {
-                    return this._saveToFirestore('members', { list: this.members });
+                    return this._saveToFirestore(window.APP_CONFIG.firestore.collections.members, { list: this.members });
                 },
                 saveTransactionsData() {
-                    return this._saveToFirestore('transactions', { list: this.transactions });
+                    return this._saveToFirestore(window.APP_CONFIG.firestore.collections.transactions, { list: this.transactions });
                 },
                 // Firestore rejects undefined values — recursively replace with ''
                 sanitize(val) {
@@ -6512,8 +6514,8 @@ async unlinkAdminPhone() {
                     const now = new Date();
                     const time = now.toLocaleDateString('he-IL') + ' ' + now.toLocaleTimeString('he-IL');
                     this.dbLog.unshift({ time, status, msg });
-                    if (this.dbLog.length > 200) this.dbLog.pop();
-                    try { localStorage.setItem('synagogue_dblog', JSON.stringify(this.dbLog)); } catch (e) { }
+                    if (this.dbLog.length > window.APP_CONFIG.limits.dbLogEntries) this.dbLog.pop();
+                    try { localStorage.setItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.databaseLog), JSON.stringify(this.dbLog)); } catch (e) { }
                 },
 
                 async _doSave(user, collection, safeData, data) {
@@ -6521,7 +6523,7 @@ async unlinkAdminPhone() {
                     try {
                         const uid = user.uid;
                         await window.fsMethods.setDoc(
-                            window.fsMethods.doc(window.db, 'users', uid, 'data', collection),
+                            window.fsMethods.doc(window.db, window.APP_CONFIG.firestore.usersCollection, uid, window.APP_CONFIG.firestore.dataSubcollection, collection),
                             safeData
                         );
                         this._logDb('ok', `שמירה: ${collection} (${Array.isArray(data.list) ? data.list.length + ' רשומות' : 'הגדרות'})`);
@@ -6531,7 +6533,7 @@ async unlinkAdminPhone() {
                         if (!this._saveFailToastShown) {
                             this._saveFailToastShown = true;
                             Swal.fire({ icon: 'error', title: 'השמירה נכשלה', text: 'השינוי לא נשמר בבסיס הנתונים. בדוק את החיבור ונסה שוב לפני שממשיכים לעבוד.', toast: true, position: 'bottom-end', showConfirmButton: false, timer: 6000 });
-                            setTimeout(() => { this._saveFailToastShown = false; }, 8000);
+                            setTimeout(() => { this._saveFailToastShown = false; }, window.APP_CONFIG.timings.saveFailureToastResetMs);
                         }
                     }
                 },
@@ -6540,12 +6542,12 @@ async unlinkAdminPhone() {
                     // ===== DEMO MODE: שמירה ל-localStorage בלבד =====
                     if (window.IS_DEMO) {
                         const safeData = this.sanitize(data);
-                        if (collection === 'members') saveDemoData({ members: safeData.list || [] });
-                        else if (collection === 'transactions') saveDemoData({ transactions: safeData.list || [] });
-                        else if (collection === 'config') saveDemoData({ config: safeData });
-                        else if (collection === 'funds') saveDemoData({ funds: safeData.list || [] });
-                        else if (collection === 'paymentPurposes') saveDemoData({ paymentPurposes: safeData.list || [] });
-                        else if (collection === 'backupMeta') saveDemoData({ backupMeta: safeData });
+                        if (collection === window.APP_CONFIG.firestore.collections.members) saveDemoData({ members: safeData.list || [] });
+                        else if (collection === window.APP_CONFIG.firestore.collections.transactions) saveDemoData({ transactions: safeData.list || [] });
+                        else if (collection === window.APP_CONFIG.firestore.collections.config) saveDemoData({ config: safeData });
+                        else if (collection === window.APP_CONFIG.firestore.collections.funds) saveDemoData({ funds: safeData.list || [] });
+                        else if (collection === window.APP_CONFIG.firestore.collections.paymentPurposes) saveDemoData({ paymentPurposes: safeData.list || [] });
+                        else if (collection === window.APP_CONFIG.firestore.collections.backupMeta) saveDemoData({ backupMeta: safeData });
                         this._logDb('ok', `שמירה (דמו): ${collection} (${Array.isArray(data.list) ? data.list.length + ' רשומות' : 'הגדרות'})`);
                         return;
                     }
@@ -6562,7 +6564,7 @@ async unlinkAdminPhone() {
                         if (!this._saveBlockedToastShown) {
                             this._saveBlockedToastShown = true;
                             Swal.fire({ icon: 'warning', title: 'הנתונים עוד לא נטענו מהמסד', text: 'השינוי לא נשמר כדי לא לדרוס הגדרות קיימות. המתן לסיום הטעינה או לחץ על רענון ונסה שוב.', toast: true, position: 'bottom-end', showConfirmButton: false, timer: 4000 });
-                            setTimeout(() => { this._saveBlockedToastShown = false; }, 8000);
+                            setTimeout(() => { this._saveBlockedToastShown = false; }, window.APP_CONFIG.timings.saveBlockedToastResetMs);
                         }
                         return;
                     }
@@ -6593,19 +6595,19 @@ async unlinkAdminPhone() {
                         // Execute all fetch requests in parallel using Promise.allSettled
                         // This prevents a single non-critical failure from discarding all loaded data
                         const results = await Promise.allSettled([
-                            window.fsMethods.getDoc(window.fsMethods.doc(window.db, 'users', uid, 'data', 'members')),
-                            window.fsMethods.getDoc(window.fsMethods.doc(window.db, 'users', uid, 'data', 'transactions')),
-                            window.fsMethods.getDoc(window.fsMethods.doc(window.db, 'users', uid, 'data', 'config')),
-                            window.fsMethods.getDoc(window.fsMethods.doc(window.db, 'users', uid, 'data', 'funds')),
-                            window.fsMethods.getDoc(window.fsMethods.doc(window.db, 'users', uid, 'data', 'paymentPurposes')),
-                            window.fsMethods.getDoc(window.fsMethods.doc(window.db, 'users', uid, 'data', 'backupMeta')),
+                            window.fsMethods.getDoc(window.fsMethods.doc(window.db, window.APP_CONFIG.firestore.usersCollection, uid, window.APP_CONFIG.firestore.dataSubcollection, window.APP_CONFIG.firestore.collections.members)),
+                            window.fsMethods.getDoc(window.fsMethods.doc(window.db, window.APP_CONFIG.firestore.usersCollection, uid, window.APP_CONFIG.firestore.dataSubcollection, window.APP_CONFIG.firestore.collections.transactions)),
+                            window.fsMethods.getDoc(window.fsMethods.doc(window.db, window.APP_CONFIG.firestore.usersCollection, uid, window.APP_CONFIG.firestore.dataSubcollection, window.APP_CONFIG.firestore.collections.config)),
+                            window.fsMethods.getDoc(window.fsMethods.doc(window.db, window.APP_CONFIG.firestore.usersCollection, uid, window.APP_CONFIG.firestore.dataSubcollection, window.APP_CONFIG.firestore.collections.funds)),
+                            window.fsMethods.getDoc(window.fsMethods.doc(window.db, window.APP_CONFIG.firestore.usersCollection, uid, window.APP_CONFIG.firestore.dataSubcollection, window.APP_CONFIG.firestore.collections.paymentPurposes)),
+                            window.fsMethods.getDoc(window.fsMethods.doc(window.db, window.APP_CONFIG.firestore.usersCollection, uid, window.APP_CONFIG.firestore.dataSubcollection, window.APP_CONFIG.firestore.collections.backupMeta)),
                         ]);
 
                         const [membersRes, txRes, configRes, fundsRes, paymentPurposesRes, backupMetaRes] = results;
 
                         // מסמך נחשב "נטען" רק אם הקריאה הצליחה (גם אם המסמך עדיין לא קיים - יצירה ראשונה)
                         this._loadedDocs = this._loadedDocs || {};
-                        const _names = ['members', 'transactions', 'config', 'funds', 'paymentPurposes', 'backupMeta'];
+                        const _names = [window.APP_CONFIG.firestore.collections.members, window.APP_CONFIG.firestore.collections.transactions, window.APP_CONFIG.firestore.collections.config, window.APP_CONFIG.firestore.collections.funds, window.APP_CONFIG.firestore.collections.paymentPurposes, window.APP_CONFIG.firestore.collections.backupMeta];
                         results.forEach((r, i) => { if (r.status === 'fulfilled') this._loadedDocs[_names[i]] = true; });
 
                         // Process members data if successfully fetched
@@ -6736,7 +6738,7 @@ async unlinkAdminPhone() {
 
                 // Synagogue name/logo helpers
                 updatePageTitle() {
-                    const name = this.config.synagogueName || 'ניהול בית הכנסת';
+                    const name = this.config.synagogueName || window.APP_CONFIG.siteName;
                     document.title = name;
                     const el = document.getElementById('pageTitle');
                     if (el) el.textContent = name;
@@ -6883,7 +6885,7 @@ async unlinkAdminPhone() {
                                 const sess = { key: sessionKey, label: name, fields };
                                 if (existing > -1) this.printSessions[existing] = sess;
                                 else this.printSessions.push(sess);
-                                localStorage.setItem('synagogue_print_sessions', JSON.stringify(this.printSessions));
+                                localStorage.setItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.printSessions), JSON.stringify(this.printSessions));
                                 Swal.showValidationMessage('✓ ההגדרה נשמרה');
                                 setTimeout(() => Swal.resetValidationMessage(), 1500);
                             });
@@ -7239,7 +7241,7 @@ async unlinkAdminPhone() {
                     if (!this.reportParams.saveName) { Swal.fire('שגיאה', 'נא להזין שם לדוח', 'error'); return; }
                     const fav = { id: Date.now(), name: this.reportParams.saveName, params: { purpose: this.reportParams.purpose, selectedPurposes: [...this.reportParams.selectedPurposes], fromDate: this.reportParams.fromDate, toDate: this.reportParams.toDate, selectedMembers: [...this.reportParams.selectedMembers], summaryOnly: !!this.reportParams.summaryOnly } };
                     this.favoriteReports.push(fav);
-                    localStorage.setItem('synagogue_favorite_reports', JSON.stringify(this.favoriteReports));
+                    localStorage.setItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.favoriteReports), JSON.stringify(this.favoriteReports));
                     Swal.fire({ icon: 'success', title: 'נשמר!', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
                     this.reportParams.saveName = '';
                 },
@@ -7253,7 +7255,7 @@ async unlinkAdminPhone() {
                     const result = await Swal.fire({ title: 'למחוק דוח מועדף?', icon: 'question', showCancelButton: true, confirmButtonText: 'מחק', cancelButtonText: 'ביטול' });
                     if (result.isConfirmed) {
                         this.favoriteReports = this.favoriteReports.filter(f => f.id !== id);
-                        localStorage.setItem('synagogue_favorite_reports', JSON.stringify(this.favoriteReports));
+                        localStorage.setItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.favoriteReports), JSON.stringify(this.favoriteReports));
                     }
                 },
 
@@ -8466,14 +8468,14 @@ async unlinkAdminPhone() {
                 initFunds() { },
 
                 saveFunds() {
-                    return this._saveToFirestore('funds', { list: this.funds });
+                    return this._saveToFirestore(window.APP_CONFIG.firestore.collections.funds, { list: this.funds });
                 },
 
                 // ═══ PAYMENT PURPOSES MANAGEMENT — מטרות תשלום (רשימה גלובלית, משותפת לכל הקופות) ═══
                 initPaymentPurposes() { },
 
                 savePaymentPurposes() {
-                    return this._saveToFirestore('paymentPurposes', { list: this.paymentPurposes });
+                    return this._saveToFirestore(window.APP_CONFIG.firestore.collections.paymentPurposes, { list: this.paymentPurposes });
                 },
 
                 addPurpose() {
@@ -8620,7 +8622,7 @@ async unlinkAdminPhone() {
                 },
 
                 _saveBackupMeta() {
-                    this._saveToFirestore('backupMeta', { backups: this.backupHistory, restores: this.restoreHistory });
+                    this._saveToFirestore(window.APP_CONFIG.firestore.collections.backupMeta, { backups: this.backupHistory, restores: this.restoreHistory });
                 },
                 clearBackupHistory() {
                     Swal.fire({
@@ -8741,7 +8743,7 @@ async unlinkAdminPhone() {
                         this._driveClientIdUsed = clientId;
                         window.__driveCodeClient = google.accounts.oauth2.initCodeClient({
                             client_id: clientId,
-                            scope: 'https://www.googleapis.com/auth/drive.file',
+                            scope: window.APP_CONFIG.googleDrive.scope,
                             ux_mode: 'popup',
                             callback: (resp) => {
                                 const p = this._drivePending; this._drivePending = null;
@@ -8775,7 +8777,7 @@ async unlinkAdminPhone() {
                 async _fetchDriveTokenFromServer() {
                     if (this._driveTokenPromise) return this._driveTokenPromise;
                     this._driveTokenPromise = (async () => {
-                        const fn = window.fsMethods.httpsCallable(window.functions, 'driveGetAccessToken');
+                        const fn = window.fsMethods.httpsCallable(window.functions, window.APP_CONFIG.googleDrive.functions.getAccessToken);
                         const r = await fn({});
                         this._setDriveToken(r.data.accessToken, r.data.expiresIn);
                         return r.data.accessToken;
@@ -8786,7 +8788,7 @@ async unlinkAdminPhone() {
 
                 // חיבור ראשוני (או חיבור מחדש של חיבור ישן): חלון גוגל -> קוד -> השרת שומר refresh token
                 async _linkDriveAccount() {
-                    const link = window.fsMethods.httpsCallable(window.functions, 'driveLinkAccount');
+                    const link = window.fsMethods.httpsCallable(window.functions, window.APP_CONFIG.googleDrive.functions.linkAccount);
                     for (let attempt = 0; attempt < 2; attempt++) {
                         const code = await this._requestDriveCode();
                         try {
@@ -8818,13 +8820,13 @@ async unlinkAdminPhone() {
                     this._driveNotLinked = false;
                     // נשמר ב-sessionStorage בלבד (נמחק עם סגירת הלשונית) כדי לשרוד רענון דף בלי לבקש חיבור מחדש
                     try {
-                        sessionStorage.setItem('drv_tok', JSON.stringify({ t: token, e: this._driveTokenExpiry, uid: window.auth?.currentUser?.uid || '' }));
+                        sessionStorage.setItem(window.getSiteStorageKey('drv_tok'), JSON.stringify({ t: token, e: this._driveTokenExpiry, uid: window.auth?.currentUser?.uid || '' }));
                     } catch (e) { }
                 },
 
                 _restoreDriveTokenFromSession() {
                     try {
-                        const o = JSON.parse(sessionStorage.getItem('drv_tok') || 'null');
+                        const o = JSON.parse(sessionStorage.getItem(window.getSiteStorageKey('drv_tok')) || 'null');
                         if (o && o.t && o.e > Date.now() && o.uid && o.uid === window.auth?.currentUser?.uid) {
                             this.googleDriveAccessToken = o.t;
                             this._driveTokenExpiry = o.e;
@@ -8836,7 +8838,7 @@ async unlinkAdminPhone() {
                 },
 
                 _clearDriveSession() {
-                    try { sessionStorage.removeItem('drv_tok'); } catch (e) { }
+                    try { sessionStorage.removeItem(window.getSiteStorageKey('drv_tok')); } catch (e) { }
                     this.googleDriveAccessToken = '';
                     this._driveTokenExpiry = 0;
                     this.googleDriveConnected = false;
@@ -8892,7 +8894,7 @@ async unlinkAdminPhone() {
                 //hide the google drive banner on the top of the homepage
                 dismissDriveBanner() {
                     this.driveBannerHiddenUntil = Date.now() + 30 * 24 * 60 * 60 * 1000;
-                    try { localStorage.setItem('synagogue_drive_banner_hidden_until', String(this.driveBannerHiddenUntil)); } catch (e) { }
+                    try { localStorage.setItem(window.getSiteStorageKey(window.APP_CONFIG.storageKeys.driveBannerHiddenUntil), String(this.driveBannerHiddenUntil)); } catch (e) { }
                 },
 
                 async connectGoogleDrive() {
@@ -8930,7 +8932,7 @@ async unlinkAdminPhone() {
                     });
                     if (!c.isConfirmed) return;
                     // 1) ביטול ההרשאה הקבועה בשרת (מוחק את ה-refresh token). לא חוסם את הניתוק אם נכשל
-                    try { await window.fsMethods.httpsCallable(window.functions, 'driveUnlink')({}); } catch (e) { console.warn('driveUnlink failed:', e); }
+                    try { await window.fsMethods.httpsCallable(window.functions, window.APP_CONFIG.googleDrive.functions.unlink)({}); } catch (e) { console.warn('driveUnlink failed:', e); }
                     // 2) ביטול ה-access token הנוכחי אצל גוגל
                     if (this.googleDriveAccessToken && window.google?.accounts?.oauth2) {
                         try { google.accounts.oauth2.revoke(this.googleDriveAccessToken, () => { }); } catch (e) { }
@@ -9914,54 +9916,8 @@ async unlinkAdminPhone() {
         }
     </script>
 
-    <script type="module">
-        // Importing the necessary libraries from Google servers
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-app.js";
-        import { initializeFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-firestore.js";
-        import {
-            getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, signOut,
-            signInWithPhoneNumber, RecaptchaVerifier, PhoneAuthProvider, linkWithCredential, unlink,
-            EmailAuthProvider, reauthenticateWithCredential, updatePassword
-        } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-auth.js";
-        import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-functions.js";
-
-        // ===== DEMO MODE: Completely skipping Firebase initialization  =====
-        if (!window.IS_DEMO) {
-            //The data you received from the console
-            const firebaseConfig = {
-                apiKey: "AIzaSyCTthCVxz18zIXT9Fpnzq_SgusBpINM-z8",
-                authDomain: "betkneset-001.firebaseapp.com",
-                projectId: "betkneset-001",
-                storageBucket: "betkneset-001.firebasestorage.app",
-                messagingSenderId: "300451630668",
-                appId: "1:300451630668:web:baca3d9e40c06b79b86ee9",
-                measurementId: "G-2XHKHB4PPR"
-            };
-
-            //init application
-            const app = initializeApp(firebaseConfig);
-            // זיהוי אוטומטי של חיבור long-polling: פותר חיבורים איטיים/תקועים ברשתות, פרוקסי ותוכנות סינון
-            const db = initializeFirestore(app, { experimentalAutoDetectLongPolling: true });
-            const auth = getAuth(app);
-            // האזור חייב להתאים לאזור שאליו פרוסות ה-Cloud Functions (functions/index.js -> REGION)
-            const functions = getFunctions(app, 'me-west1');
-
-            // Expose Firebase tools to the global window scope for Alpine.js
-            window.db = db;
-            window.auth = auth;
-            window.functions = functions;
-            window.fsMethods = {
-                doc, setDoc, getDoc, signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, signOut,
-                signInWithPhoneNumber, RecaptchaVerifier, httpsCallable, PhoneAuthProvider, linkWithCredential, unlink,
-                EmailAuthProvider, reauthenticateWithCredential, updatePassword
-            };
-
-            console.log("snir - Firebase initialized successfully");
-        } else {
-            console.log("Demo mode - Firebase not initialized");
-        }
-        // ===== END DEMO MODE =====
-    </script>
+    <!-- Initialize Firebase through the shared deployment-aware module. -->
+    <script type="module" src="./app-init.js"></script>
 </body>
 
 </html>
